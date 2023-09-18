@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:projectsem4_mobile_itlearning/constants/urlAPI.dart';
+import 'package:projectsem4_mobile_itlearning/models/StudentCourse/Course.dart';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,18 +11,20 @@ import '../models/StudentCourse/CourseStudentResponseDTO.dart';
 
 
 class StudentCourseProvider extends ChangeNotifier {
-  List<CourseStudentResponseDTO> _studentCourses = [];
+  List<Course> _course = [];
   AuthenticatedHttpClient _httpClient; // Thêm một trường cho AuthenticatedHttpClient
 
-  List<CourseStudentResponseDTO> get studentCourses => _studentCourses;
+  List<Course> get course => _course;
 
   StudentCourseProvider(this._httpClient); // Inject AuthenticatedHttpClient
 
   // Phương thức để lấy danh sách StudentCourse
-  Future<List<CourseStudentResponseDTO>> fetchStudentCourses() async {
+  Future<void> fetchStudentCourses() async {
     try {
       final response = await _httpClient.get(
-        Uri.parse(domain+ 'api/student/getListCourse'),
+        Uri.parse(
+          domain + 'api/course/list-course-learning',
+        ),
       );
 
       if (response.statusCode == 200) {
@@ -30,13 +33,14 @@ class StudentCourseProvider extends ChangeNotifier {
 
         if (apiResponse.success) {
           final List<dynamic> courseData = apiResponse.data;
-          final List<CourseStudentResponseDTO> studentCourses = courseData
-              .map((item) => CourseStudentResponseDTO.fromJson(item))
+          _course = courseData
+              .map((item) => Course.fromJson(item))
               .toList();
-          return studentCourses;
+          notifyListeners(); // notifying listeners about the change
         } else {
           // Handle success with no data if needed
-          return [];
+          _course = [];
+          notifyListeners(); // notifying listeners about the change
         }
       } else {
         // Handle error if needed

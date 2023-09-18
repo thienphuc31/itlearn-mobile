@@ -44,6 +44,9 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
+        minSdkVersion 19
+        targetSdkVersion 30
     }
 
     buildTypes {
@@ -57,4 +60,9 @@ android {
 
 flutter {
     source '../..'
+}
+dependencies {
+    // Các dependencies khác của bạn ở đây...
+
+    implementation 'com.android.support:multidex:1.0.3'
 }

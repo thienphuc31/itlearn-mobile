@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projectsem4_mobile_itlearning/constants/colors.dart';
 import 'package:projectsem4_mobile_itlearning/providers/AccountProvider.dart';
+import 'package:projectsem4_mobile_itlearning/providers/CourseKeyProvider.dart';
+import 'package:projectsem4_mobile_itlearning/providers/ExerciseProvider.dart';
 import 'package:projectsem4_mobile_itlearning/providers/ForgotPassProvider.dart';
 import 'package:projectsem4_mobile_itlearning/providers/LoginProvider.dart';
 import 'package:projectsem4_mobile_itlearning/providers/RegisterProvider.dart';
@@ -42,7 +44,9 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => RegisterProvider()),
           ChangeNotifierProvider(create: (context) => ForgotPassProvider()),
           ChangeNotifierProvider(create: (context) => StudentCourseProvider(authenticatedHttpClient!)),
-          ChangeNotifierProvider(create: (context) => ResetPasswordProvider())
+          ChangeNotifierProvider(create: (context) => ResetPasswordProvider()),
+          ChangeNotifierProvider(create: (context) => CourseKeyProvider(authenticatedHttpClient!)),
+          ChangeNotifierProvider(create: (context) => ExerciseProvider(authenticatedHttpClient!))
           ],
         child: MaterialApp(
           theme: ThemeData(primaryColor: primaryBlue),
