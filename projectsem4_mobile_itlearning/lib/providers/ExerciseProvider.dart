@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/AuthenticatedHttpClient.dart';
 import '../constants/urlAPI.dart';
@@ -14,6 +15,11 @@ class ExerciseProvider extends ChangeNotifier {
   AuthenticatedHttpClient _httpClient;
 
   ExerciseProvider(this._httpClient);
+
+
+  // Other methods to manipulate _exerciseData go here
+
+
 
   Future<void> getTheoryExercise(int theoryExerciseId) async {
     final response = await _httpClient.get(Uri.parse(domain + 'api/theory/getTheoryExercise/$theoryExerciseId'));
