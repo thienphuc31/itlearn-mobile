@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:projectsem4_mobile_itlearning/constants/urlAPI.dart';
+import 'package:provider/provider.dart';
 
 import '../constants/AuthenticatedHttpClient.dart';
 import '../models/ApiResponse.dart';
 import '../models/CourseKey/CourseKey.dart';
 import '../models/Lesson/Lesson.dart';
 import '../widgets/ExampleSnackbar.dart';
+import 'AccountProvider.dart';
 
 class CourseKeyProvider with ChangeNotifier {
   Map<int, List<CourseKey>> _courses = {};
@@ -19,7 +21,7 @@ class CourseKeyProvider with ChangeNotifier {
   List<CourseKey> getCourseKeys(int courseId) => _courses[courseId] ?? [];
 
 
-  Future<void> fetchCourseKeyList(int courseId) async {
+  Future<void> fetchCourseKeyList(int courseId, BuildContext context) async {
     try {
       final response = await _httpClient.get(Uri.parse(domain + 'api/course-key/list-learning/$courseId'));
       if (response.statusCode == 200) {
@@ -36,7 +38,9 @@ class CourseKeyProvider with ChangeNotifier {
           _courses[courseId] = [];
           notifyListeners(); // notifying listeners about the change
         }
-      } else {
+      } else if (response.statusCode == 401) {
+        await Provider.of<AccountProvider>(context, listen: false).logOut(context);
+      }else {
         // Handle error if needed
         throw Exception('Failed to fetch student courses');
       }

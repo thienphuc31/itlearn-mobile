@@ -125,7 +125,7 @@ class _EditStudentPageState extends State<EditStudentPage> {
               kieuValidate: 'phone',
             ),
             MauInput2(
-              placeholder: account.address != "null" ? account.address : 'Full Name',
+              placeholder: account.address != "null" ? account.address : 'Address',
               controller: _addressController,
             ),
             MauInput2(

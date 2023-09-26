@@ -38,11 +38,11 @@ class StudentCoursePage extends StatelessWidget {
                             topRight: Radius.circular(10.0), // Set top right radius
                           ),
                         ),
-                        child: Row(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              '${courses[i].title ?? 'No title'}',
+                              '${courses[i].title!.toUpperCase() ?? 'No title'}',
                               style: DefaultTextStyle.of(context).style,
                             ),
                             Text(
@@ -53,7 +53,7 @@ class StudentCoursePage extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseKeyList(courses[i].id!);
+                        Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseKeyList(courses[i].id!,context);
                       },
                       subtitle: Container(
                         padding: EdgeInsets.all(16.0),
@@ -130,7 +130,7 @@ class StudentCoursePage extends StatelessWidget {
                               title: Text('Các chương của khoá học'),
                               children: <Widget>[
                                 FutureBuilder(
-                                  future: Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseKeyList(courses[i].id!),
+                                  future: Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseKeyList(courses[i].id!,context),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState == ConnectionState.waiting) {
                                       return Center(child: CircularProgressIndicator()); // Show loading indicator while waiting
@@ -225,7 +225,7 @@ class StudentCoursePage extends StatelessWidget {
 
                               onExpansionChanged: (bool expanding) {
                                 if (expanding) {
-                                  Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseKeyList(courses[i].id!);
+                                  Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseKeyList(courses[i].id!,context);
                                 }
                               },
                             ),
