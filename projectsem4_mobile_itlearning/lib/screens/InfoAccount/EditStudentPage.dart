@@ -37,7 +37,7 @@ class _EditStudentPageState extends State<EditStudentPage> {
   @override
   Widget build(BuildContext context) {
     // Lấy thông tin tài khoản từ AccountProvider
-    final accountProvider = Provider.of<AccountProvider>(context);
+    final accountProvider = Provider.of<AccountProvider>(context, listen: true);
 
     // Sử dụng thông tin tài khoản
     final account = accountProvider.account;
@@ -66,18 +66,19 @@ class _EditStudentPageState extends State<EditStudentPage> {
                         height: 110,
                         fit: BoxFit.cover,
                       )
-                          : (account.avatar != "null" && account.avatar.isNotEmpty)
+                          : (account.avatar != "" && account.avatar.isNotEmpty)
                           ? Image.network(
                         account.avatar,
                         width: 110,
                         height: 110,
                         fit: BoxFit.cover,
                       )
-                          : Icon(
-                        Icons.person,
-                        size: 48,
-                        color: Colors.white,
-                      ),
+                          : Image.network(
+                        'https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg',
+                        width: 110,
+                        height: 110,
+                        fit: BoxFit.cover,
+                      )
                     ),
                   ),
                   Positioned(
@@ -181,22 +182,22 @@ class _EditStudentPageState extends State<EditStudentPage> {
             ElevatedButton(
               onPressed: () async {
                 final editRequest = EditStudentRequest(
-                  fullName: _fullNameController.text,
-                  email: _emailController.text,
-                  phone: _phoneController.text,
-                  address: _addressController.text,
-                  education: _educationController.text,
+                  fullName: _fullNameController.text.isEmpty ? account.fullName : _fullNameController.text,
+                  email: _emailController.text.isEmpty ? account.email : _emailController.text,
+                  phone: _phoneController.text.isEmpty ? account.phone : _phoneController.text,
+                  address: _addressController.text.isEmpty ? account.address : _addressController.text,
+                  education: _educationController.text.isEmpty ? account.education : _educationController.text,
                   passwordOld: _passwordOldController.text,
-                  dob: _dobController.text,
+                  dob: _dobController.text.isEmpty ? account.dob : _dobController.text,
                   newPassword: _newPasswordController.text,
                   confirmNewPass: _confirmNewPassController.text,
-                  avatarFile: _avatarFile,
+                  avatarFile: _avatarFile
                 );
 
                 await Provider.of<AccountProvider>(context, listen: false)
-                    .updateStudentInformation(editRequest);
+                    .updateStudentInformation(editRequest,context);
 
-                Navigator.of(context).pop();
+                Navigator.pushNamed(context, '/Main');
               },
               style: ElevatedButton.styleFrom(
                 primary: primaryBlue, // Màu nền của nút

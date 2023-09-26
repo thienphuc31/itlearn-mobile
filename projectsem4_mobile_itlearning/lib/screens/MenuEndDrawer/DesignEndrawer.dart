@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projectsem4_mobile_itlearning/constants/colors.dart';
 
 import 'package:provider/provider.dart';
 
@@ -36,23 +37,19 @@ class DesignEndrawer extends StatelessWidget {
                 accountName: Text(account.fullName), // Hiển thị họ tên
                 accountEmail: Text(account.email), // Hiển thị email
                 currentAccountPicture: ClipOval(
-                    child: account.avatar != "null"
+                    child: account.avatar != ""
                         ? Image.network(
                       account.avatar,
                       fit: BoxFit.cover,
                     )
-                        :Icon(Icons.account_circle,color: Colors.white,size: 80,)
+                        :Image.network(
+                      "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
+                      fit: BoxFit.cover,
+                    )
                 ),
-              ),
-              ListTile(
-                title: Text("History Order"),
-                leading: Icon(Icons.history),
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => MyApp4()),
-                  // );
-                },
+                decoration: BoxDecoration(
+                  color: primaryBlue, // Đặt màu nền
+                ),
               ),
               ListTile(
                 title: Text("Help"),

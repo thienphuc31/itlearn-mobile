@@ -5,6 +5,7 @@ import 'package:projectsem4_mobile_itlearning/providers/CourseKeyProvider.dart';
 import 'package:projectsem4_mobile_itlearning/providers/ExerciseProvider.dart';
 import 'package:projectsem4_mobile_itlearning/providers/ForgotPassProvider.dart';
 import 'package:projectsem4_mobile_itlearning/providers/LoginProvider.dart';
+import 'package:projectsem4_mobile_itlearning/providers/NoteProvider.dart';
 import 'package:projectsem4_mobile_itlearning/providers/RegisterProvider.dart';
 import 'package:projectsem4_mobile_itlearning/providers/ResetPasswordProvider.dart';
 import 'package:projectsem4_mobile_itlearning/providers/StudentCourseProvider.dart';
@@ -46,7 +47,9 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => StudentCourseProvider(authenticatedHttpClient!)),
           ChangeNotifierProvider(create: (context) => ResetPasswordProvider()),
           ChangeNotifierProvider(create: (context) => CourseKeyProvider(authenticatedHttpClient!)),
-          ChangeNotifierProvider(create: (context) => ExerciseProvider(authenticatedHttpClient!))
+          ChangeNotifierProvider(create: (context) => NoteProvider(authenticatedHttpClient!)),
+          ChangeNotifierProvider(create: (context) => ExerciseProvider(authenticatedHttpClient!)),
+
           ],
         child: MaterialApp(
           theme: ThemeData(primaryColor: primaryBlue),

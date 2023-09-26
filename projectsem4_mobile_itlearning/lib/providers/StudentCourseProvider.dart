@@ -1,13 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:projectsem4_mobile_itlearning/constants/urlAPI.dart';
 import 'package:projectsem4_mobile_itlearning/models/StudentCourse/Course.dart';
+import 'package:provider/provider.dart';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/AuthenticatedHttpClient.dart';
 import '../models/ApiResponse.dart';
 import '../models/StudentCourse/CourseStudentResponseDTO.dart';
+import 'AccountProvider.dart';
 
 
 class StudentCourseProvider extends ChangeNotifier {
@@ -19,7 +22,7 @@ class StudentCourseProvider extends ChangeNotifier {
   StudentCourseProvider(this._httpClient); // Inject AuthenticatedHttpClient
 
   // Phương thức để lấy danh sách StudentCourse
-  Future<void> fetchStudentCourses() async {
+  Future<void> fetchStudentCourses(BuildContext context) async {
     try {
       final response = await _httpClient.get(
         Uri.parse(
@@ -42,7 +45,10 @@ class StudentCourseProvider extends ChangeNotifier {
           _course = [];
           notifyListeners(); // notifying listeners about the change
         }
-      } else {
+      }else if (response.statusCode == 401) {
+        await Provider.of<AccountProvider>(context, listen: false).logOut(context);
+      }
+      else {
         // Handle error if needed
         throw Exception('Failed to fetch student courses');
       }

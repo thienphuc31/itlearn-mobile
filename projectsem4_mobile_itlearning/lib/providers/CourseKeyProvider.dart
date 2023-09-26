@@ -8,31 +8,32 @@ import '../constants/AuthenticatedHttpClient.dart';
 import '../models/ApiResponse.dart';
 import '../models/CourseKey/CourseKey.dart';
 import '../models/Lesson/Lesson.dart';
+import '../widgets/ExampleSnackbar.dart';
 
 class CourseKeyProvider with ChangeNotifier {
-  List<CourseKey> _courseList = [];
+  Map<int, List<CourseKey>> _courses = {};
   AuthenticatedHttpClient _httpClient;
   List<Lesson> lessons = [];
   CourseKeyProvider(this._httpClient);
 
-  List<CourseKey> get courseList => _courseList;
+  List<CourseKey> getCourseKeys(int courseId) => _courses[courseId] ?? [];
+
 
   Future<void> fetchCourseKeyList(int courseId) async {
     try {
-      final response = await _httpClient.get(Uri.parse(domain + 'api/course-key/list-of-student/$courseId'));
-
+      final response = await _httpClient.get(Uri.parse(domain + 'api/course-key/list-learning/$courseId'));
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         final apiResponse = ApiResponse.fromJson(responseData);
 
         if (apiResponse.success) {
           var data = apiResponse.data as List;
-          _courseList = data.map((course) => CourseKey.fromJson(course)).toList();
+          _courses[courseId] = data.map((course) => CourseKey.fromJson(course)).toList();
 
           notifyListeners(); // notifying listeners about the change
         } else {
           // Handle success with no data if needed
-          _courseList;
+          _courses[courseId] = [];
           notifyListeners(); // notifying listeners about the change
         }
       } else {
@@ -59,4 +60,16 @@ class CourseKeyProvider with ChangeNotifier {
       throw Exception('Failed to load lesson');
     }
   }
+  Future<void> completeItemofLesson(int iolId, BuildContext context) async {
+
+    try {
+      final response = await _httpClient.post(Uri.parse(domain + 'api/item-of-lesson/complete-item-lesson/$iolId'));
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final apiResponse = ApiResponse.fromJson(responseData);
+      SnackBarShowSuccess(context, apiResponse.message);
+    } catch (e) {
+      throw Exception('Failed to complete Item of Lesson');
+    }
+  }
+
 }

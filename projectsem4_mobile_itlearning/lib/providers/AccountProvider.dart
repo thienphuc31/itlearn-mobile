@@ -55,7 +55,7 @@ class AccountProvider extends ChangeNotifier {
     Navigator.pushNamedAndRemoveUntil(context, "/LoginMain", (route) => false);
   }
 
-  Future<Account?> getInforAccount() async {
+  Future<Account?> getInforAccount(BuildContext context) async {
     var ref = await SharedPreferences.getInstance();
     var accessToken = ref.getString('accessToken');
 
@@ -79,11 +79,13 @@ class AccountProvider extends ChangeNotifier {
       } else {
         return Future.error(apiResponse.message);
       }
+    }else if (response.statusCode == 401) {
+      await logOut(context);
     }
 
     return Future.error('Please Login To Continue !');
   }
-  Future<void> updateStudentInformation(EditStudentRequest editRequest) async {
+  Future<void> updateStudentInformation(EditStudentRequest editRequest, BuildContext context) async {
     final ref = await SharedPreferences.getInstance();
     final accessToken = ref.getString('accessToken');
 
@@ -104,27 +106,15 @@ class AccountProvider extends ChangeNotifier {
     request.headers.addAll(headers);
 
     // Thêm các trường thông tin từ editRequest vào request
-    if (editRequest.fullName != null && editRequest.fullName!.isNotEmpty) {
       request.fields['fullName'] = editRequest.fullName!;
-    }
-    if (editRequest.email != null && editRequest.email!.isNotEmpty) {
       request.fields['email'] = editRequest.email!;
-    }
-    if (editRequest.phone != null && editRequest.phone!.isNotEmpty) {
       request.fields['phone'] = editRequest.phone!;
-    }
-    if (editRequest.address != null && editRequest.address!.isNotEmpty) {
       request.fields['address'] = editRequest.address!;
-    }
-    if (editRequest.education != null && editRequest.education!.isNotEmpty) {
       request.fields['education'] = editRequest.education!;
-    }
     if (editRequest.passwordOld != null && editRequest.passwordOld!.isNotEmpty) {
       request.fields['passwordOld'] = editRequest.passwordOld!;
     }
-    if (editRequest.dob != null && editRequest.dob!.isNotEmpty) {
       request.fields['dob'] = editRequest.dob!;
-    }
     if (editRequest.newPassword != null && editRequest.newPassword!.isNotEmpty) {
       request.fields['newPassword'] = editRequest.newPassword!;
     }
@@ -154,11 +144,16 @@ class AccountProvider extends ChangeNotifier {
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
       final jsonData = json.decode(responseBody);
+      await getInforAccount(context);
       // Xử lý dữ liệu trả về nếu cần
 
       // Thông báo về sự cập nhật thành công hoặc gì đó
-    } else {
-      throw Exception('Failed to edit student');
+    } else if (response.statusCode == 401) {
+      await logOut(context);
+    }else {
+      final responseBody = await response.stream.bytesToString();
+      final jsonData = json.decode(responseBody);
+      throw Exception(jsonData["message"]);
     }
   }
 

@@ -17,4 +17,5 @@ const textMedium_Bold15 = TextStyle(color: Colors.black,fontSize: 15,fontWeight:
 const textMedium_Medium18 = TextStyle(color:Colors.black,fontSize: 18,fontWeight: FontWeight.w500);
 const ColorSlibarHomeMain = Color(0xfffFEF0EE);
 const primaryBlue = Color.fromRGBO(67, 96,  201, 1);
+const primaryYellow = Color.fromRGBO(255, 228, 181, 1 );
 const inputBox = Color.fromRGBO(242, 242,  242, 1);

@@ -46,7 +46,7 @@ class LoginProvider extends ChangeNotifier {
         await prefs.setString('accessToken', accessToken);
 
         final accountProvider = Provider.of<AccountProvider>(context, listen: false);
-        await accountProvider.getInforAccount();
+        await accountProvider.getInforAccount(context);
         final fullname = accountProvider.account.fullName;
         final phone = accountProvider.account.phone;
         final address = accountProvider.account.address;
@@ -57,7 +57,8 @@ class LoginProvider extends ChangeNotifier {
         } else {
           Navigator.pushNamed(context, '/Main');
         }
-      } else {
+      }
+      else {
         setLoading(false);
         var apiResponse = ApiResponse.fromJson(json.decode(response.body));
         SnackBarShowError(context, apiResponse.message);

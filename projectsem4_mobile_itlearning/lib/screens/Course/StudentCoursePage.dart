@@ -8,11 +8,12 @@ import '../../providers/StudentCourseProvider.dart';
 import 'CourseDataPage.dart';
 
 class StudentCoursePage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: Provider.of<StudentCourseProvider>(context, listen: false).fetchStudentCourses(),
+        future: Provider.of<StudentCourseProvider>(context, listen: false).fetchStudentCourses(context),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -27,18 +28,37 @@ class StudentCoursePage extends StatelessWidget {
                 } else {
                   return ListView.builder(
                     itemCount: courses.length,
-                    itemBuilder: (ctx, i) => Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(10.0),
+                    itemBuilder: (ctx, i) => ListTile(
+                      title: Container(
+                        padding: EdgeInsets.all(16.0), // Add some padding to the container
+                        decoration: BoxDecoration(
+                          color: primaryBlue.withOpacity(0.6), // Set the background color
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10.0), // Set top left radius
+                            topRight: Radius.circular(10.0), // Set top right radius
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              '${courses[i].title ?? 'No title'}',
+                              style: DefaultTextStyle.of(context).style,
+                            ),
+                            Text(
+                              '${courses[i].dateStart ?? ''}~${courses[i].dateEnd ?? ''}',
+                              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 12), // Change the font size here
+                            ),
+                          ],
+                        ),
                       ),
-                      child: ListTile(
-                        title: Text(courses[i].title ?? 'No title'),
-                        onTap: () {
-                          Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseKeyList(courses[i].id!);
-                        },
-                        subtitle: Column(
+                      onTap: () {
+                        Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseKeyList(courses[i].id!);
+                      },
+                      subtitle: Container(
+                        padding: EdgeInsets.all(16.0),
+                        color: primaryYellow.withOpacity(0.2),
+                        child: Column(
                           children: [
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,8 +66,8 @@ class StudentCoursePage extends StatelessWidget {
                                 Expanded(
                                   flex: 1,
                                   child: CircularPercentIndicator(
-                                    radius: 35.0,
-                                    lineWidth: 8.0,
+                                    radius: 30.0,
+                                    lineWidth: 6.0,
                                     percent: courses[i].percentVideo != null ? courses[i].percentVideo! / 100 : 0,
                                     center: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -66,8 +86,8 @@ class StudentCoursePage extends StatelessWidget {
                                 Expanded(
                                   flex: 1,
                                   child: CircularPercentIndicator(
-                                    radius: 35.0,
-                                    lineWidth: 8.0,
+                                    radius: 30.0,
+                                    lineWidth: 6.0,
                                     percent: courses[i].percentExercise != null ? courses[i].percentExercise! / 100 : 0,
                                     center: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -86,8 +106,8 @@ class StudentCoursePage extends StatelessWidget {
                                 Expanded(
                                   flex: 1,
                                   child: CircularPercentIndicator(
-                                    radius: 35.0,
-                                    lineWidth: 8.0,
+                                    radius: 30.0,
+                                    lineWidth: 6.0,
                                     percent: courses[i].percentTheory != null ? courses[i].percentTheory! / 100 : 0,
                                     center: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -105,6 +125,7 @@ class StudentCoursePage extends StatelessWidget {
                                 ),
                               ],
                             ),
+                            SizedBox(height: 16),
                             ExpansionTile(
                               title: Text('Các chương của khoá học'),
                               children: <Widget>[
@@ -120,7 +141,7 @@ class StudentCoursePage extends StatelessWidget {
                                       } else {
                                         return Consumer<CourseKeyProvider>(
                                           builder: (context, courseKeyProvider, _) {
-                                            final courseKeys = courseKeyProvider.courseList;
+                                            final courseKeys = courseKeyProvider.getCourseKeys(courses[i].id!);
                                             if (courseKeys.isEmpty) {
                                               return Text('No course keys found.');
                                             } else {
@@ -131,11 +152,11 @@ class StudentCoursePage extends StatelessWidget {
                                                   return ListTile(
                                                     title: Row(
                                                       children: [
-                                                        // Image(
-                                                        //   image: NetworkImage(courseKeys[index].thumbnail ?? 'https://www.stellarinfo.com/blog/wp-content/uploads/2018/05/Media-file-error-in-online-video.png'),
-                                                        //   width: 50, // You can adjust the size as needed.
-                                                        //   height: 50, // You can adjust the size as needed.
-                                                        // ),
+                                                        Image(
+                                                          image: NetworkImage(courseKeys[index].thumbnail ?? 'https://www.stellarinfo.com/blog/wp-content/uploads/2018/05/Media-file-error-in-online-video.png'),
+                                                          width: 50, // You can adjust the size as needed.
+                                                          height: 50, // You can adjust the size as needed.
+                                                        ),
                                                         SizedBox(width: 8), // Add some spacing between the image and the text
                                                         Expanded(child: Text(courseKeys[index].title ?? 'No title')),
                                                         SizedBox(width: 8),
@@ -160,12 +181,34 @@ class StudentCoursePage extends StatelessWidget {
                                                       ],
                                                     ),
                                                     onTap: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => CourseDataPage(id: courseKeys[index].id),
-                                                        ),
-                                                      );
+                                                      if (courseKeys[index] != null) {
+                                                        if (courseKeys[index].allowAccess!) {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) => CourseDataPage(courseKey: courseKeys[index]),
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (context) => AlertDialog(
+                                                              title: Text('Notice'),
+                                                              content: Text('Please complete the previous.'),
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                  child: Text('OK'),
+                                                                  onPressed: () {
+                                                                    Navigator.of(context).pop();
+                                                                  },
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        }
+                                                      } else {
+                                                        print('courseKeys[index] is null');
+                                                      }
                                                     },
                                                   );
                                                 },
@@ -177,18 +220,21 @@ class StudentCoursePage extends StatelessWidget {
                                     }
                                   },
                                 ),
+                                SizedBox(height: 16),
                               ],
+
                               onExpansionChanged: (bool expanding) {
                                 if (expanding) {
                                   Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseKeyList(courses[i].id!);
                                 }
                               },
                             ),
+
                           ],
                         ),
-
-
                       ),
+
+
                     ),
                   );
                 }

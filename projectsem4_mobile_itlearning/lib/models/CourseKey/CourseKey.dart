@@ -6,6 +6,7 @@ class CourseKey {
   final int? totalTheory;
   final int? totalExercise;
   final int? percentCompleted;
+  final bool? allowAccess;
 
   CourseKey({
     this.id,
@@ -15,6 +16,7 @@ class CourseKey {
     this.totalTheory,
     this.totalExercise,
     this.percentCompleted,
+    this.allowAccess
   });
 
   factory CourseKey.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class CourseKey {
       totalTheory: json['totalTheory'],
       totalExercise: json['totalExercise'],
       percentCompleted: json['percentCompleted'],
+      allowAccess: json['allowAccess']
     );
   }
 
@@ -38,6 +41,7 @@ class CourseKey {
       'totalTheory': totalTheory,
       'totalExercise': totalExercise,
       'percentCompleted': percentCompleted,
+      'allowAccess': allowAccess
     };
   }
 }

@@ -23,9 +23,7 @@ class _TestdHomePageHomePageState extends State<TestdHomePage> {
   final GlobalKey<ScaffoldState> _sKey = GlobalKey();
 
   List listWidget = [
-    EditStudentPage(),
     StudentCoursePage(),
-    EditStudentPage(),
     EditStudentPage(),
   ];
   bool _isSearching = false;
@@ -34,7 +32,7 @@ class _TestdHomePageHomePageState extends State<TestdHomePage> {
     if (fullAddress.length <= maxLength) {
       return fullAddress;
     } else {
-      return fullAddress.substring(0, maxLength - 3) + '...';
+      return fullAddress.substring(0, maxLength - 1) + '...';
     }
   }
 
@@ -63,8 +61,9 @@ class _TestdHomePageHomePageState extends State<TestdHomePage> {
     var checkLogin =
         Provider.of<AccountProvider>(context, listen: true).getToken;
     // double screenWidth = MediaQuery.of(context).size.width;
-    print(checkLogin);
+
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         key: _sKey,
         endDrawer: DesignEndrawer(),
         backgroundColor: Colors.white,
@@ -80,8 +79,6 @@ class _TestdHomePageHomePageState extends State<TestdHomePage> {
               },
               child: Text("Login"))
               :
-          //Avatar
-
           Row(
 
             children: [
@@ -98,8 +95,9 @@ class _TestdHomePageHomePageState extends State<TestdHomePage> {
                   margin: EdgeInsets.only(right: 10),
                   child: CircleAvatar(
                     backgroundColor: Colors.grey,
-                    backgroundImage: NetworkImage(
-                        Provider.of<AccountProvider>(context, listen: false).account.avatar), // Đặt URL hình ảnh của avatar ở đây
+                    backgroundImage: (Provider.of<AccountProvider>(context, listen: false).account.avatar != null && Provider.of<AccountProvider>(context, listen: false).account.avatar.isNotEmpty)
+                        ? NetworkImage(Provider.of<AccountProvider>(context, listen: false).account.avatar)
+                        : NetworkImage('https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg'), // Đặt URL hình ảnh của avatar ở đây
                     radius: 20, // Điều chỉnh kích thước avatar tùy ý
                   ),
                 ),
@@ -122,7 +120,6 @@ class _TestdHomePageHomePageState extends State<TestdHomePage> {
                     ],
                   ),
                   Text(
-
                     Provider.of<AccountProvider>(context, listen: false).account.fullName,
                     style: TextStyle(fontSize: 20, color: Colors.black,fontWeight: FontWeight.bold),
                   ),
@@ -213,6 +210,65 @@ class _TestdHomePageHomePageState extends State<TestdHomePage> {
                         ],
                       ),
                     ),
+                    // MaterialButton(
+                    //   onPressed: () {
+                    //     setState(() {
+                    //       currenIndex = 1;
+                    //     });
+                    //   },
+                    //   minWidth: 35,
+                    //   child: Column(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       Icon(
+                    //         Icons.add_box,
+                    //         color: (currenIndex == 1)
+                    //             ? primaryGreen
+                    //             : Colors.black,
+                    //       ),
+                    //       Text(
+                    //         "List Product",
+                    //         style: TextStyle(
+                    //           color: (currenIndex == 1)
+                    //               ? primaryGreen
+                    //               : Colors.black,
+                    //         ),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // MaterialButton(
+                    //   onPressed: () {
+                    //     setState(() {
+                    //       currenIndex = 2;
+                    //     });
+                    //   },
+                    //   minWidth: 35,
+                    //   child: Column(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       Icon(
+                    //         Icons.favorite,
+                    //         color: (currenIndex == 2)
+                    //             ? primaryGreen
+                    //             : Colors.black,
+                    //       ),
+                    //       Text(
+                    //         "Favorite",
+                    //         style: TextStyle(
+                    //           color: (currenIndex == 2)
+                    //               ? primaryGreen
+                    //               : Colors.black,
+                    //         ),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
                     MaterialButton(
                       onPressed: () {
                         setState(() {
@@ -224,74 +280,15 @@ class _TestdHomePageHomePageState extends State<TestdHomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.add_box,
-                            color: (currenIndex == 1)
-                                ? primaryGreen
-                                : Colors.black,
-                          ),
-                          Text(
-                            "List Product",
-                            style: TextStyle(
-                              color: (currenIndex == 1)
-                                  ? primaryGreen
-                                  : Colors.black,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MaterialButton(
-                      onPressed: () {
-                        setState(() {
-                          currenIndex = 2;
-                        });
-                      },
-                      minWidth: 35,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.favorite,
-                            color: (currenIndex == 2)
-                                ? primaryGreen
-                                : Colors.black,
-                          ),
-                          Text(
-                            "Favorite",
-                            style: TextStyle(
-                              color: (currenIndex == 2)
-                                  ? primaryGreen
-                                  : Colors.black,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    MaterialButton(
-                      onPressed: () {
-                        setState(() {
-                          currenIndex = 3;
-                        });
-                      },
-                      minWidth: 35,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
                             Icons.account_circle,
-                            color: (currenIndex == 3)
+                            color: (currenIndex == 1)
                                 ? primaryGreen
                                 : Colors.black,
                           ),
                           Text(
                             "Account",
                             style: TextStyle(
-                              color: (currenIndex == 3)
+                              color: (currenIndex == 1)
                                   ? primaryGreen
                                   : Colors.black,
                             ),
