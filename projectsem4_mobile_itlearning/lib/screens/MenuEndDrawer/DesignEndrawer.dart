@@ -39,7 +39,7 @@ class DesignEndrawer extends StatelessWidget {
                 currentAccountPicture: ClipOval(
                     child: account.avatar != ""
                         ? Image.network(
-                      account.avatar,
+                      account.avatar, 
                       fit: BoxFit.cover,
                     )
                         :Image.network(
