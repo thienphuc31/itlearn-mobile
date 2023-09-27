@@ -118,6 +118,7 @@ class SubmittedExerciseHome extends StatelessWidget {
             ),
             if(itemOfLesson!.exerciseHome!.marked!)
               Text("Mentor's feedback", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            if (itemOfLesson?.exerciseHome?.mentorDescription != null)
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(6.0), // padding for the text inside the container

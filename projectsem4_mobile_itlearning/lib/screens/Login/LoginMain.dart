@@ -137,68 +137,6 @@ class _LoginMainState extends State<LoginMain> {
                       ),
                     ),
                   ),
-                  // SizedBox(
-                  //   height: 30,
-                  // ),
-                  // GachNgangCoChuOGiua("or continue with"),
-                  //
-                  // Padding(
-                  //   padding: EdgeInsets.symmetric(vertical: 20),
-                  //   child: Center(
-                  //     child: Container(
-                  //       width: 50,
-                  //       height: 50,
-                  //       decoration: BoxDecoration(
-                  //         image: DecorationImage(
-                  //             image:
-                  //                 AssetImage("assets/images/Login/Icon_google.png"),
-                  //             fit: BoxFit.fill),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // Center(
-                  //   child: RichText(
-                  //     text: TextSpan(
-                  //         style: TextStyle(fontSize: 15, color: Color.fromRGBO(147, 147, 147, 0.7) ),
-                  //         children: [
-                  //           TextSpan(text: "Don't have an account?"),
-                  //           TextSpan(
-                  //             text: ' Sign up',
-                  //             style: TextStyle(color: primaryBlue),
-                  //             recognizer: TapGestureRecognizer()
-                  //               ..onTap = () {
-                  //                 // Đoạn này thực hiện điều hướng khi người dùng bấm vào "Đăng ký"
-                  //                 Navigator.pushNamed(context, '/Register');
-                  //               },
-                  //           )
-                  //         ]),
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   height: 30,
-                  // ),
-                  //
-                  // InkWell(
-                  //   onTap: () {
-                  //     // Provider.of<AccountProvider>(context,listen: false).logOut();
-                  //     Navigator.pushNamedAndRemoveUntil(context, "/Main", (route) => false);
-                  //   },
-                  //   child: Center(
-                  //     child: Container(
-                  //       width: 50,
-                  //       height: 50,
-                  //       child: Icon(
-                  //         Icons.home,
-                  //         color: Colors.white,
-                  //       ),
-                  //       decoration: BoxDecoration(
-                  //         color: Colors.pinkAccent,
-                  //         borderRadius: BorderRadius.circular(25),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),

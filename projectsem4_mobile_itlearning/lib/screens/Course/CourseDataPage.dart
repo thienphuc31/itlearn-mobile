@@ -35,7 +35,12 @@ class _CourseDataPageState extends State<CourseDataPage> {
   ItemOfLesson? iol;
   bool isNoteTaking = false;
   bool canComplete = false;
-  late bool isCompleted = iol!.complete!;
+  bool isCompleted = false;
+
+  void _updateCompletionStatus() {
+    isCompleted = iol?.complete ?? false;
+    // Call this method whenever you want to update the value of isCompleted.
+  }
 
 
   ValueNotifier<ItemOfLesson?> _selectedItemNotifier = ValueNotifier<ItemOfLesson?>(null);
@@ -49,9 +54,9 @@ class _CourseDataPageState extends State<CourseDataPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _loadFirstIncompleteVideo();
-    });
+    // WidgetsBinding.instance!.addPostFrameCallback((_) {
+    //   _loadFirstIncompleteVideo();
+    // });
     _chewieControllerNotifier.addListener(_updateProgress);
     futureNotifier = ValueNotifier(
         Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseData(widget.courseKey!.id!)
@@ -64,20 +69,41 @@ class _CourseDataPageState extends State<CourseDataPage> {
       _progressNotifier.value = progress;
     }
   }
-  Future<void> _loadFirstIncompleteVideo() async {
-    final lessons = await Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseData(widget.courseKey!.id!);
-    for (var lesson in lessons) {
-      for (var item in lesson.itemOfLessons!) {
-        if ((item.type ?? '') == 'VIDEO' && item.complete == false) {
-          await _initializePlayer(item, context);
-          return;
-        }
-      }
-    }
-  }
+  // Future<void> _loadFirstIncompleteVideo() async {
+  //   try {
+  //     final lessons = await Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseData(widget.courseKey!.id!);
+  //     for (var lesson in lessons) {
+  //       for (var item in lesson.itemOfLessons!) {
+  //         if ((item.type ?? '') == 'VIDEO' && item.complete == false) {
+  //           await _initializePlayer(item, context);
+  //           return;
+  //         }
+  //       }
+  //     }
+  //   } catch (e) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: const Text('Error'),
+  //           content: Text('An error occurred while loading the first incomplete video: $e'),
+  //           actions: <Widget>[
+  //             TextButton(
+  //               child: const Text('OK'),
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   }
+  // }
 
   Future<void> _initializePlayer(ItemOfLesson IoL, BuildContext context) async {
     iol = IoL;
+    _updateCompletionStatus();
     final oldVideoPlayerController = _chewieControllerNotifier.value?.videoPlayerController;
     final videoPlayerController = VideoPlayerController.network(iol!.videoCourse!.urlVideo!);
     await videoPlayerController.initialize();
@@ -99,6 +125,8 @@ class _CourseDataPageState extends State<CourseDataPage> {
   @override
   void dispose() {
     _chewieController?.dispose();
+    _contentController.dispose();
+    _chewieControllerNotifier.removeListener(_updateProgress);
     super.dispose();
   }
 
@@ -204,14 +232,17 @@ class _CourseDataPageState extends State<CourseDataPage> {
                                               ),
                                               onPressed: progress >= 0.7 ? () async{
                                                 if (iol != null && iol!.id! != null) {
-                                                  await Provider.of<CourseKeyProvider>(context, listen: false).completeItemofLesson(iol!.id!, context);
-                                                  setState(() {
-                                                    futureNotifier = ValueNotifier(
-                                                        Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseData(widget.courseKey!.id!)
-                                                    );
-                                                    canComplete == !canComplete;
-                                                    isCompleted = true;
-                                                  });
+                                                  bool success = await Provider.of<CourseKeyProvider>(context, listen: false).completeItemofLesson(iol!.id!, context);
+
+                                                  if (success) {
+                                                    setState(() {
+                                                      futureNotifier = ValueNotifier(
+                                                          Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseData(widget.courseKey!.id!)
+                                                      );
+                                                      canComplete = !canComplete;
+                                                      isCompleted = true;
+                                                    });
+                                                  }
                                                 } else {
                                                   print('iol or id is null');
                                                 }
@@ -495,17 +526,18 @@ class _CourseDataPageState extends State<CourseDataPage> {
                       print('submittedExerciseData is null');
                     }
                   }
-                  if (item.type == 'EXERCISE' && item.complete == true) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SubmittedExerciseHome(itemOfLesson: item)),
-                    );
-                  }
-                  if (item.type == 'EXERCISE' && item.complete == false) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ExerciseHomePage(itemOfLesson: item, courseKey: widget.courseKey)),
-                    );
+                  if (item.type == 'EXERCISE') {
+                    if (item.complete == true) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SubmittedExerciseHome(itemOfLesson: item)),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ExerciseHomePage(itemOfLesson: item, courseKey: widget.courseKey)),
+                      );
+                    }
                   }
                 }
                 else {

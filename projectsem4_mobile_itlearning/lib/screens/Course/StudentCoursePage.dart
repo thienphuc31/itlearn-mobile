@@ -30,24 +30,26 @@ class StudentCoursePage extends StatelessWidget {
                     itemCount: courses.length,
                     itemBuilder: (ctx, i) => ListTile(
                       title: Container(
-                        padding: EdgeInsets.all(16.0), // Add some padding to the container
+                        padding: EdgeInsets.all(10.0), // Add some padding to the container
                         decoration: BoxDecoration(
                           color: primaryBlue.withOpacity(0.6), // Set the background color
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10.0), // Set top left radius
-                            topRight: Radius.circular(10.0), // Set top right radius
-                          ),
                         ),
-                        child: Row(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text(
-                              '${courses[i].title ?? 'No title'}',
-                              style: DefaultTextStyle.of(context).style,
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                '${courses[i].title ?? 'No title'}',
+                                style: DefaultTextStyle.of(context).style.copyWith(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
                             ),
-                            Text(
-                              '${courses[i].dateStart ?? ''}~${courses[i].dateEnd ?? ''}',
-                              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 12), // Change the font size here
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Text(
+                                '${courses[i].dateStart ?? ''} to ${courses[i].dateEnd ?? ''}',
+                                style: DefaultTextStyle.of(context).style.copyWith(fontSize: 12), // Change the font size here
+                              ),
                             ),
                           ],
                         ),
@@ -57,7 +59,7 @@ class StudentCoursePage extends StatelessWidget {
                       },
                       subtitle: Container(
                         padding: EdgeInsets.all(16.0),
-                        color: primaryYellow.withOpacity(0.2),
+                        color: primaryYellow.withOpacity(0.4),
                         child: Column(
                           children: [
                             Row(
@@ -127,7 +129,7 @@ class StudentCoursePage extends StatelessWidget {
                             ),
                             SizedBox(height: 16),
                             ExpansionTile(
-                              title: Text('Các chương của khoá học'),
+                              title: Text('Course chapters'),
                               children: <Widget>[
                                 FutureBuilder(
                                   future: Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseKeyList(courses[i].id!),
@@ -154,14 +156,14 @@ class StudentCoursePage extends StatelessWidget {
                                                       children: [
                                                         Image(
                                                           image: NetworkImage(courseKeys[index].thumbnail ?? 'https://www.stellarinfo.com/blog/wp-content/uploads/2018/05/Media-file-error-in-online-video.png'),
-                                                          width: 50, // You can adjust the size as needed.
-                                                          height: 50, // You can adjust the size as needed.
+                                                          width: 40, // You can adjust the size as needed.
+                                                          height: 40, // You can adjust the size as needed.
                                                         ),
                                                         SizedBox(width: 8), // Add some spacing between the image and the text
                                                         Expanded(child: Text(courseKeys[index].title ?? 'No title')),
                                                         SizedBox(width: 8),
                                                         CircularPercentIndicator(
-                                                          radius: 20.0,
+                                                          radius: 15.0,
                                                           lineWidth: 4.0,
                                                           percent: courseKeys[index].percentCompleted != null ? courseKeys[index].percentCompleted! / 100 : 0,
                                                           center: Column(

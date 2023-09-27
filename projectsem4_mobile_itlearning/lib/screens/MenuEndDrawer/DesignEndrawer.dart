@@ -51,32 +51,14 @@ class DesignEndrawer extends StatelessWidget {
                   color: primaryBlue, // Đặt màu nền
                 ),
               ),
+
+
+
               ListTile(
-                title: Text("Help"),
-                leading: Icon(Icons.question_mark),
-                // onTap: () {
-                //   Navigator.pushNamed(context, '/HelpMain');
-                // },
-              ),
-              ListTile(
-                title: Text("Feed Back"),
-                leading: Icon(Icons.feedback_outlined),
-                // onTap: () {
-                //   Navigator.pushNamed(context, '/Feedback');
-                // },
-              ),
-              ListTile(
-                title: Text("SiteMap"),
-                leading: Icon(Icons.map_sharp),
-                // onTap: (){
-                //   Navigator.pushNamed(context, '/SiteMap');
-                // },
-              ),
-              ListTile(
-                title: Text("Setting"),
-                leading: Icon(Icons.settings),
+                title: Text("Account"),
+                leading: Icon(Icons.account_circle_outlined),
                 onTap: () {
-                  // Handle the Add Contact action here
+                 Navigator.pushNamed(context, '/EditStudentPage');
                 },
               ),
               ListTile(

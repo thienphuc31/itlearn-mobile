@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
 
-class MauInput2 extends StatelessWidget {
-
+class MauInput2 extends StatefulWidget {
   final String placeholder;
   final TextEditingController controller;
   final FocusNode? nextFocus;
@@ -12,10 +11,10 @@ class MauInput2 extends StatelessWidget {
   final bool? password;
   final String? kieuValidate;
   final VoidCallback? onDatePickerTap;
+  final Widget? suffixIcon;
 
 
   MauInput2({
-
     required this.placeholder,
     required this.controller,
     this.nextFocus,
@@ -24,7 +23,15 @@ class MauInput2 extends StatelessWidget {
     this.password,
     this.kieuValidate,
     this.onDatePickerTap,
+    this.suffixIcon,
   });
+
+  @override
+  _MauInput2State createState() => _MauInput2State();
+}
+
+class _MauInput2State extends State<MauInput2> {
+  bool _isPasswordVisible = false; // New state variable
 
   void _scrollTo(FocusNode focusNode) {
     Scrollable.ensureVisible(
@@ -40,49 +47,43 @@ class MauInput2 extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
-
-
           GestureDetector(
             onTap: () {
               // Ẩn bàn phím và hủy focus khi người dùng nhấp ngoài
               FocusScope.of(context).unfocus();
-              if (onDatePickerTap != null) {
-                onDatePickerTap!(); // Gọi hàm callback khi người dùng nhấp vào MauInput2
+              if (widget.onDatePickerTap != null) {
+                widget.onDatePickerTap!(); // Gọi hàm callback khi người dùng nhấp vào MauInput2
               }
             },
-
             child: TextFormField(
               cursorColor: primaryBlue,
-
-              obscureText: password ?? false,
+              obscureText: widget.password == true ? !_isPasswordVisible : false,
               validator: (value) {
-                if (kieuValidate == "email") {
+                if (widget.kieuValidate == "email") {
                   return _validateEmail(value!);
-                } else if (kieuValidate == "password") {
+                } else if (widget.kieuValidate == "password") {
                   return _validatePassword(value!);
-                } else if (kieuValidate == "username") {
+                } else if (widget.kieuValidate == "username") {
                   return _validateUsername(value!);
-                } else if (kieuValidate == "fullname") {
+                } else if (widget.kieuValidate == "fullname") {
                   return _validateFullname(value!);
-                } else if (kieuValidate == "phone") {
+                } else if (widget.kieuValidate == "phone") {
                   return _validatePhone(value!);
-                } else if (kieuValidate == "passwordLogin") {
+                } else if (widget.kieuValidate == "passwordLogin") {
                   return _validatePasswordLogin(value!);
                 }
                 return null;
               },
-              focusNode: currentFocus,
-
+              focusNode: widget.currentFocus,
               onFieldSubmitted: (val) {
-                if (context != null && nextFocus != null && currentFocus != null) {
-                  currentFocus!.unfocus();
-                  FocusScope.of(context!).requestFocus(nextFocus!);
-                  _scrollTo(nextFocus!);
+                if (context != null && widget.nextFocus != null && widget.currentFocus != null) {
+                  widget.currentFocus!.unfocus();
+                  FocusScope.of(context!).requestFocus(widget.nextFocus!);
+                  _scrollTo(widget.nextFocus!);
                 }
               },
-              controller: controller,
+              controller: widget.controller,
               decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 filled: true,
@@ -99,26 +100,39 @@ class MauInput2 extends StatelessWidget {
 
                 ),
 
-                labelText: placeholder,
+                labelText: widget.placeholder,
                 labelStyle: TextStyle(color: Colors.black26),
-                prefixIcon: placeholder == "Username"
+                prefixIcon: widget.placeholder == "Username"
                     ? Icon(Icons.person)
-                    : placeholder == "Password"
+                    : widget.placeholder == "Password"
                     ? Icon(Icons.lock_rounded)
-                    : placeholder == "Confirm Password"
+                    : widget.placeholder == "Confirm Password"
                     ? Icon(Icons.lock_rounded)
-                    : placeholder == "Phone"
+                    : widget.placeholder == "Phone"
                     ? Icon(Icons.phone)
-                    : placeholder == "Email"
+                    : widget.placeholder == "Email"
                     ? Icon(Icons.mail)
-                    : placeholder == "Full Name"
+                    : widget.placeholder == "Full Name"
                     ? Icon(Icons.drive_file_rename_outline)
                     :null,
-                suffixIcon: placeholder == "Date of Birth (dd/MM/yyyy)"
+                suffixIcon: widget.placeholder == "Password" || widget.placeholder == "Old Password" || widget.placeholder == "New Password" || widget.placeholder == "Confirm New Password"
+    ? IconButton(
+                  // Add IconButton to suffixIcon
+                  icon: Icon(
+                    // Choose the icon based on the _isPasswordVisible state
+                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    // Update the _isPasswordVisible state when pressed
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                )
+                    : widget.placeholder == "Date of Birth (dd/MM/yyyy)"
                     ? Icon(Icons.calendar_month)
                     :null,
               ),
-
             ),
           ),
         ],
@@ -127,26 +141,26 @@ class MauInput2 extends StatelessWidget {
   }
 
   String? _validateEmail(String value) {
-    // Thực hiện validate email và trả về thông báo lỗi (nếu có)
+    // Perform email validation and return error message (if any)
   }
 
   String? _validatePassword(String value) {
-    // Thực hiện validate password và trả về thông báo lỗi (nếu có)
+    // Perform password validation and return error message (if any)
   }
 
   String? _validateUsername(String value) {
-    // Thực hiện validate username và trả về thông báo lỗi (nếu có)
+    // Perform username validation and return error message (if any)
   }
 
   String? _validateFullname(String value) {
-    // Thực hiện validate fullname và trả về thông báo lỗi (nếu có)
+    // Perform full name validation and return error message (if any)
   }
 
   String? _validatePhone(String value) {
-    // Thực hiện validate phone và trả về thông báo lỗi (nếu có)
+    // Perform phone number validation and return error message (if any)
   }
 
   String? _validatePasswordLogin(String value) {
-    // Thực hiện validate password login và trả về thông báo lỗi (nếu có)
+    // Perform password login validation and return error message (if any)
   }
 }

@@ -60,13 +60,20 @@ class CourseKeyProvider with ChangeNotifier {
       throw Exception('Failed to load lesson');
     }
   }
-  Future<void> completeItemofLesson(int iolId, BuildContext context) async {
+  Future<bool> completeItemofLesson(int iolId, BuildContext context) async {
 
     try {
       final response = await _httpClient.post(Uri.parse(domain + 'api/item-of-lesson/complete-item-lesson/$iolId'));
       final Map<String, dynamic> responseData = json.decode(response.body);
       final apiResponse = ApiResponse.fromJson(responseData);
-      SnackBarShowSuccess(context, apiResponse.message);
+      if(apiResponse.success){
+        SnackBarShowSuccess(context, apiResponse.message);
+        return true;
+      }
+      else {
+        SnackBarShowError(context, apiResponse.message);
+        return false;
+      }
     } catch (e) {
       throw Exception('Failed to complete Item of Lesson');
     }

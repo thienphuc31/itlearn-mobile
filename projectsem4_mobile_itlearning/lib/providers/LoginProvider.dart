@@ -47,16 +47,8 @@ class LoginProvider extends ChangeNotifier {
 
         final accountProvider = Provider.of<AccountProvider>(context, listen: false);
         await accountProvider.getInforAccount(context);
-        final fullname = accountProvider.account.fullName;
-        final phone = accountProvider.account.phone;
-        final address = accountProvider.account.address;
-        final dob = accountProvider.account.dob;
+        Navigator.pushNamed(context, '/Main');
 
-        if (fullname == "null" || phone == "null" || address == "null" || dob =="null") {
-          Navigator.pushNamed(context, '/EditStudentPage');
-        } else {
-          Navigator.pushNamed(context, '/Main');
-        }
       }
       else {
         setLoading(false);

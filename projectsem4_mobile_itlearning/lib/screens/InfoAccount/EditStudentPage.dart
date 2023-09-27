@@ -26,11 +26,17 @@ class _EditStudentPageState extends State<EditStudentPage> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmNewPassController = TextEditingController();
 
+  bool _isHiddenPassword = true;
   File? _avatarFile;
   bool showPasswordFields = false;
   void togglePasswordFields() {
     setState(() {
       showPasswordFields = !showPasswordFields;
+    });
+  }
+  void _togglePasswordView() {
+    setState(() {
+      _isHiddenPassword = !_isHiddenPassword;
     });
   }
 
@@ -115,17 +121,12 @@ class _EditStudentPageState extends State<EditStudentPage> {
               controller: _fullNameController,
             ),
             MauInput2(
-              placeholder: account.email != "null" ? account.email : 'Email ',
-              controller: _emailController,
-              kieuValidate: 'email',
-            ),
-            MauInput2(
               placeholder: account.phone != "null" ? account.phone : 'Phone ',
               controller: _phoneController,
               kieuValidate: 'phone',
             ),
             MauInput2(
-              placeholder: account.address != "null" ? account.address : 'Full Name',
+              placeholder: account.address != "null" ? account.address : 'Address',
               controller: _addressController,
             ),
             MauInput2(
@@ -156,13 +157,18 @@ class _EditStudentPageState extends State<EditStudentPage> {
               ],
             ),
 
-            if (showPasswordFields)
-              MauInput2(
-                placeholder: 'Old Password',
-                controller: _passwordOldController,
-                password: true,
-                kieuValidate: 'password',
+            MauInput2(
+              placeholder: 'Old Password',
+              controller: _passwordOldController,
+              password: _isHiddenPassword,
+              kieuValidate: 'password',
+              suffixIcon: IconButton(
+                onPressed: _togglePasswordView,
+                icon: Icon(
+                  _isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                ),
               ),
+            ),
             if (showPasswordFields)
               MauInput2(
                 placeholder: 'New Password',

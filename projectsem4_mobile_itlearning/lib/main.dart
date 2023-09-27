@@ -61,26 +61,7 @@ class MyApp extends StatelessWidget {
             '/Register': (context) => const RegisterMain(),
             '/Forgot': (context) => ForgotPassMain(),
             '/EditStudentPage':(context)=>EditStudentPage(),
-            // '/HomeMain':(context)=> const HomeMain(),
-            // '/PlantDetail': (context)=> PlantDetail(),
-            // '/PlantList':(context)=>const PlantList(),
-            // '/InforAccount':(context)=> const InforAccount(),
-            // '/ForgotPassword':(context) =>  ForgotPassword(),
-            // '/AuthoriztionCodePage':(context)=>AuthorizationCode(),
-            // '/FavoriteList':(context)=>FavoriteList(),
-            // '/Pay':(context)=>Payy(),
             '/Main':(context)=>TestdHomePage(),
-            // '/PaymentSuccess':(context)=>PaymentSuccess(),
-            // '/Feedback':(context)=>FeedbackScreen(),
-            // '/HelpMain':(context)=>HelpMain(),
-            // '/SiteMap':(context)=>SiteMap(),
-
-
-
-
-
-            // '/Test':(context)=>MyApp4(),
-            // '/HistoryOrder':(context)=>MyApp4(),
 
 
           },
