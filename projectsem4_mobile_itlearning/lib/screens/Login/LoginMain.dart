@@ -94,7 +94,7 @@ class _LoginMainState extends State<LoginMain> {
                     password: true,
                     placeholder: "Password",
                     controller: txt_Password,
-                    kieuValidate: "passwordLogin",
+                    kieuValidate: "password",
                     currentFocus: fc_Password,
                   ),
                   InkWell(

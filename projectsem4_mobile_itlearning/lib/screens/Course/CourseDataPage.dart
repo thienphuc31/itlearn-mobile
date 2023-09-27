@@ -20,6 +20,7 @@ import 'NoteList.dart';
 
 class CourseDataPage extends StatefulWidget {
   final CourseKey? courseKey;
+
   CourseDataPage({this.courseKey});
 
   @override
@@ -35,12 +36,7 @@ class _CourseDataPageState extends State<CourseDataPage> {
   ItemOfLesson? iol;
   bool isNoteTaking = false;
   bool canComplete = false;
-  bool isCompleted = false;
-
-  void _updateCompletionStatus() {
-    isCompleted = iol?.complete ?? false;
-    // Call this method whenever you want to update the value of isCompleted.
-  }
+  late bool isCompleted = iol!.complete!;
 
 
   ValueNotifier<ItemOfLesson?> _selectedItemNotifier = ValueNotifier<ItemOfLesson?>(null);
@@ -54,13 +50,14 @@ class _CourseDataPageState extends State<CourseDataPage> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance!.addPostFrameCallback((_) {
-    //   _loadFirstIncompleteVideo();
-    // });
+
     _chewieControllerNotifier.addListener(_updateProgress);
+
     futureNotifier = ValueNotifier(
         Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseData(widget.courseKey!.id!)
     );
+
+
   }
 
   void _updateProgress() {
@@ -69,45 +66,15 @@ class _CourseDataPageState extends State<CourseDataPage> {
       _progressNotifier.value = progress;
     }
   }
-  // Future<void> _loadFirstIncompleteVideo() async {
-  //   try {
-  //     final lessons = await Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseData(widget.courseKey!.id!);
-  //     for (var lesson in lessons) {
-  //       for (var item in lesson.itemOfLessons!) {
-  //         if ((item.type ?? '') == 'VIDEO' && item.complete == false) {
-  //           await _initializePlayer(item, context);
-  //           return;
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: const Text('Error'),
-  //           content: Text('An error occurred while loading the first incomplete video: $e'),
-  //           actions: <Widget>[
-  //             TextButton(
-  //               child: const Text('OK'),
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
+
 
   Future<void> _initializePlayer(ItemOfLesson IoL, BuildContext context) async {
     iol = IoL;
-    _updateCompletionStatus();
     final oldVideoPlayerController = _chewieControllerNotifier.value?.videoPlayerController;
     final videoPlayerController = VideoPlayerController.network(iol!.videoCourse!.urlVideo!);
-    await videoPlayerController.initialize();
     await Provider.of<NoteProvider>(context,listen:  false).getNote(iol!.videoCourse!.id!, context);
+    await videoPlayerController.initialize();
+
     videoPlayerController.addListener(()  {
       _updateProgress();
       // This will be called whenever the video position changes
@@ -184,11 +151,6 @@ class _CourseDataPageState extends State<CourseDataPage> {
                                     ValueListenableBuilder<double>(
                                       valueListenable: _progressNotifier,
                                       builder: (context, progress, child) {
-                                        // WidgetsBinding.instance!.addPostFrameCallback((_) {
-                                        //   setState(() {
-                                        //     canComplete = progress >= 0.7;
-                                        //   });
-                                        // });
                                         return Row(
                                           children: [ // Only show the 'Complete' button if the video has been fully watched
                                             isCompleted
@@ -239,6 +201,7 @@ class _CourseDataPageState extends State<CourseDataPage> {
                                                       futureNotifier = ValueNotifier(
                                                           Provider.of<CourseKeyProvider>(context, listen: false).fetchCourseData(widget.courseKey!.id!)
                                                       );
+
                                                       canComplete = !canComplete;
                                                       isCompleted = true;
                                                     });
@@ -401,18 +364,6 @@ class _CourseDataPageState extends State<CourseDataPage> {
                       } else if (snapshot.data == null) {
                         return Center(child: Text('No data available!'));
                       } else {
-                        for (var lesson in snapshot.data!) {
-                          for (var item in lesson.itemOfLessons!) {
-                            if ((item.type ?? '') == 'VIDEO' &&
-                                item.complete == false) {
-                              _initializePlayer(item, context);
-                              break;
-                            }
-                          }
-                          if (_chewieController != null) {
-                            break;
-                          }
-                        }
                         return Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -503,9 +454,11 @@ class _CourseDataPageState extends State<CourseDataPage> {
                   if ((item.type ?? '') == 'VIDEO') {
                     setState(() {
                       iol = item;
+                      isCompleted = false;
+                      canComplete = false;
                     });
                     _selectedItemNotifier.value = item;
-                    await _initializePlayer(item, context);
+                    _initializePlayer(item, context);
                     await Provider.of<NoteProvider>(context,listen:  false).getNote(item!.videoCourse!.id!, context);
                     // await Provider.of<NoteProvider>(context,listen:  false).getNote(item!.videoCourse!.id!, context);
                   }
@@ -526,18 +479,17 @@ class _CourseDataPageState extends State<CourseDataPage> {
                       print('submittedExerciseData is null');
                     }
                   }
-                  if (item.type == 'EXERCISE') {
-                    if (item.complete == true) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SubmittedExerciseHome(itemOfLesson: item)),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ExerciseHomePage(itemOfLesson: item, courseKey: widget.courseKey)),
-                      );
-                    }
+                  if (item.type == 'EXERCISE' && item.complete == true) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SubmittedExerciseHome(itemOfLesson: item)),
+                    );
+                  }
+                  if (item.type == 'EXERCISE' && item.complete == false) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ExerciseHomePage(itemOfLesson: item, courseKey: widget.courseKey)),
+                    );
                   }
                 }
                 else {

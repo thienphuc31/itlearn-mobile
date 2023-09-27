@@ -94,6 +94,7 @@ class _MauInput2State extends State<MauInput2> {
                   borderSide: BorderSide.none ,
 
                 ),
+                errorMaxLines: 3,
                 focusedBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   borderSide:  BorderSide(width: 2,color: primaryBlue),
@@ -122,6 +123,7 @@ class _MauInput2State extends State<MauInput2> {
                     // Choose the icon based on the _isPasswordVisible state
                     _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                   ),
+
                   onPressed: () {
                     // Update the _isPasswordVisible state when pressed
                     setState(() {
@@ -145,7 +147,14 @@ class _MauInput2State extends State<MauInput2> {
   }
 
   String? _validatePassword(String value) {
-    // Perform password validation and return error message (if any)
+    Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{6,}$';
+    RegExp regex = new RegExp(pattern as String);
+
+    if (!regex.hasMatch(value)) {
+      return 'Must contain 6 characters, uppercase, lowercase, numbers, special case!';
+    } else {
+      return null;
+    }
   }
 
   String? _validateUsername(String value) {

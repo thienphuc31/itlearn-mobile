@@ -54,13 +54,7 @@ class DesignEndrawer extends StatelessWidget {
 
 
 
-              ListTile(
-                title: Text("Account"),
-                leading: Icon(Icons.account_circle_outlined),
-                onTap: () {
-                 Navigator.pushNamed(context, '/EditStudentPage');
-                },
-              ),
+
               ListTile(
                 title: Text("Sign Out"),
                 leading: Icon(Icons.logout_sharp),

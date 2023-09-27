@@ -39,6 +39,36 @@ class _EditStudentPageState extends State<EditStudentPage> {
       _isHiddenPassword = !_isHiddenPassword;
     });
   }
+  bool isPasswordValid(String password) {
+    // Kiểm tra độ dài
+    if (password.length < 6) {
+      return false;
+    }
+
+    // Kiểm tra chữ cái viết hoa
+    if (!password.contains(RegExp(r'[A-Z]'))) {
+      return false;
+    }
+
+    // Kiểm tra chữ cái viết thường
+    if (!password.contains(RegExp(r'[a-z]'))) {
+      return false;
+    }
+
+    // Kiểm tra số
+    if (!password.contains(RegExp(r'[0-9]'))) {
+      return false;
+    }
+
+    // Kiểm tra ký tự đặc biệt
+    if (!password.contains(RegExp(r'[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]'))) {
+      return false;
+    }
+
+    return true;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +163,6 @@ class _EditStudentPageState extends State<EditStudentPage> {
               placeholder: account.education != "null" ? account.education : 'Education',
               controller: _educationController,
             ),
-
             MauInput2(
               placeholder: account.dob != "null" ? account.dob :'Date of Birth (dd/MM/yyyy)',
               controller: _dobController,
@@ -175,6 +204,12 @@ class _EditStudentPageState extends State<EditStudentPage> {
                 controller: _newPasswordController,
                 password: true,
                 kieuValidate: 'password',
+                suffixIcon: IconButton(
+                  onPressed: _togglePasswordView,
+                  icon: Icon(
+                    _isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                  ),
+                ),
               ),
             if (showPasswordFields)
               MauInput2(
@@ -182,11 +217,32 @@ class _EditStudentPageState extends State<EditStudentPage> {
                 controller: _confirmNewPassController,
                 password: true,
                 kieuValidate: 'password',
+                suffixIcon: IconButton(
+                  onPressed: _togglePasswordView,
+                  icon: Icon(
+                    _isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                  ),
+                ),
               ),
 
 
             ElevatedButton(
               onPressed: () async {
+                final String newPassword = _newPasswordController.text;
+                final String confirmNewPass = _confirmNewPassController.text;
+                final String oldPassword = _passwordOldController.text;
+
+                if ((newPassword != null && newPassword.isNotEmpty && !isPasswordValid(newPassword)) ||
+                    (confirmNewPass != null && confirmNewPass.isNotEmpty && !isPasswordValid(confirmNewPass)) ||
+                    (oldPassword != null && oldPassword.isNotEmpty && !isPasswordValid(oldPassword))) {
+                  // Hiển thị thông báo lỗi nếu mật khẩu không hợp lệ
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Password must contain 6 characters, uppercase, lowercase, numbers, special case!'),
+                    ),
+                  );
+                  return; // Ngăn chặn thực hiện hành động tiếp theo
+                }
                 final editRequest = EditStudentRequest(
                   fullName: _fullNameController.text.isEmpty ? account.fullName : _fullNameController.text,
                   email: _emailController.text.isEmpty ? account.email : _emailController.text,

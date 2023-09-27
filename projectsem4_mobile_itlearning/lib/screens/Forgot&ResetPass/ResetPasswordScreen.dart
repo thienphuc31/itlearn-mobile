@@ -36,8 +36,12 @@ class ResetPasswordForm extends StatefulWidget {
 }
 
 class _ResetPasswordFormState extends State<ResetPasswordForm> {
+  // Tạo một GlobalKey<FormState>
+  final _formKey = GlobalKey<FormState>();
+
   final txt_Password = TextEditingController();
   final txt_ConfirmPassword = TextEditingController();
+
   FocusNode fc_Password = FocusNode();
   FocusNode fc_ConfirmPass = FocusNode();
 
@@ -45,8 +49,8 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
   Widget build(BuildContext context) {
     return BackgroundLogoWidget(
       bodycontent: Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
           child: Column(
             children: [
               Padding(
@@ -81,17 +85,20 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
               SizedBox(height: 16.0),
               InkWell(
                 onTap: () async {
-                  String newPassword = txt_Password.text;
-                  String confirmPassword = txt_ConfirmPassword.text;
+                  // Sử dụng _formKey để gọi phương thức validate
+                  if (_formKey.currentState!.validate()) {
+                    String newPassword = txt_Password.text;
+                    String confirmPassword = txt_ConfirmPassword.text;
 
-                  if (newPassword == confirmPassword) {
-                    Provider.of<ResetPasswordProvider>(context, listen: false)
-                        .resetPassword(context, newPassword, widget.token);
-                  } else {
-                    // Passwords don't match
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Passwords do not match")),
-                    );
+                    if (newPassword == confirmPassword) {
+                      Provider.of<ResetPasswordProvider>(context, listen: false)
+                          .resetPassword(context, newPassword, widget.token);
+                    } else {
+                      // Passwords don't match
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Passwords do not match")),
+                      );
+                    }
                   }
                 },
                 child: Container(
@@ -111,7 +118,6 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                   ),
                 ),
               )
-
             ],
           ),
         ),

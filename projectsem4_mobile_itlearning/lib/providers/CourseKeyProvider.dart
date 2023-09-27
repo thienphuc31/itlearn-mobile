@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:projectsem4_mobile_itlearning/constants/urlAPI.dart';
 
@@ -67,11 +68,27 @@ class CourseKeyProvider with ChangeNotifier {
       final Map<String, dynamic> responseData = json.decode(response.body);
       final apiResponse = ApiResponse.fromJson(responseData);
       if(apiResponse.success){
-        SnackBarShowSuccess(context, apiResponse.message);
+        Fluttertoast.showToast(
+            msg: apiResponse.message,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
         return true;
       }
       else {
-        SnackBarShowError(context, apiResponse.message);
+        Fluttertoast.showToast(
+            msg: apiResponse.message,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
         return false;
       }
     } catch (e) {
